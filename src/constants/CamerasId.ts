@@ -1,0 +1,5 @@
+export enum CamerasId {
+  DEBUG_CAMERA = 'DEBUG_CAMERA',
+  DUMMY = 'DUMMY',
+  DUMMY_ORTHOGRAPHIC = 'DUMMY_ORTHOGRAPHIC',
+}
