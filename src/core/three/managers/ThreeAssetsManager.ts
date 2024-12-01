@@ -31,24 +31,26 @@ export class ThreeAssetsManager {
   }
 
   public static async Load(): Promise<void> {
-    const promises = Array.from(this._Queue.entries()).map(async ([id, { type, path }]) => {
-      let asset = undefined;
+    const promises = Array.from(this._Queue.entries()).map(
+      async ([id, { type, path }]) => {
+        let asset = undefined;
 
-      switch (type) {
-        case AssetsTypes.TEXTURE:
-          asset = await TextureLoader.Load(path);
-          this.TexturesMap.set(id, asset);
-          break;
-        case AssetsTypes.GLB:
-          asset = await GlbLoader.Load(path);
-          this.ModelsMap.set(id, asset);
-          break;
-        case AssetsTypes.HDR:
-          asset = await HdrLoader.Load(path);
-          this.HdrMap.set(id, asset);
-          break;
+        switch (type) {
+          case AssetsTypes.TEXTURE:
+            asset = await TextureLoader.Load(path);
+            this.TexturesMap.set(id, asset);
+            break;
+          case AssetsTypes.GLB:
+            asset = await GlbLoader.Load(path);
+            this.ModelsMap.set(id, asset);
+            break;
+          case AssetsTypes.HDR:
+            asset = await HdrLoader.Load(path);
+            this.HdrMap.set(id, asset);
+            break;
+        }
       }
-    });
+    );
 
     await Promise.all(promises);
   }

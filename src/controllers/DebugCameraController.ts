@@ -1,7 +1,8 @@
-import { CamerasId } from "../constants/CamerasId";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { PerspectiveCameraControllerBase } from "../core/three/bases/cameras/PerspectiveCameraControllerBase";
+import { MainThree } from "@core/three/MainThree";
 import { Vector3 } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { CamerasId } from "../constants/CamerasId";
+import { PerspectiveCameraControllerBase } from "../core/three/bases/cameras/PerspectiveCameraControllerBase";
 
 export class DebugCameraController extends PerspectiveCameraControllerBase {
   public isOrbitCamera = true;
@@ -16,6 +17,7 @@ export class DebugCameraController extends PerspectiveCameraControllerBase {
 
   start() {
     super.start()
+    this.setDomElementContainer();
     this.orbit.enabled = true;
   }  
 
@@ -24,7 +26,7 @@ export class DebugCameraController extends PerspectiveCameraControllerBase {
     this.orbit.enabled = false;
   }
 
-  setDomElementContainer(domElementContainer) {
+  setDomElementContainer(domElementContainer: HTMLElement = MainThree.DomElementContainer): void {
     super.setDomElementContainer(domElementContainer);
     
     this.orbit = new OrbitControls(this.camera, this._domElementContainer);

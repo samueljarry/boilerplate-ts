@@ -1,16 +1,18 @@
 import { Scene, WebGLRenderer } from "three";
 
 import { Action } from "../common/utils/Action";
+import { AssetsId } from '../../constants/AssetsId';
 import { CameraControllerBase } from "./bases/cameras/CameraControllerBase";
 import { CamerasId } from "../../constants/CamerasId";
 import { CamerasManager } from "./managers/CamerasManager";
 import { DebugCameraController } from "src/controllers/DebugCameraController";
 import { DomEvents } from "@core/common/constants/DomEvents";
 import { Object3DBase } from "./bases/Object3DBase";
+import { ThreeAssetsManager } from "./managers/ThreeAssetsManager";
 import { ThreeInteractiveManager } from "./managers/ThreeInteractiveManager";
 import { ThreeViewBase } from "./bases/ThreeViewBase";
 import { Ticker } from "@core/common/utils/Ticker";
-import { ViewTypes } from "../common/constants/views/ViewTypes";
+import { ViewId } from "@constants/ViewId";
 import { ViewsManager } from "@core/common/managers/ViewsManager";
 
 export class MainThree {
@@ -28,7 +30,6 @@ export class MainThree {
   public static Init(): void {
     this._SetRenderer();
 
-    // ViewsManager.Show(ViewId.MAIN_THREE);
     ViewsManager.OnViewsChange.add(this._OnViewsChange);
 
     CamerasManager.OnCameraChange.add(this._ChangeCamera);
@@ -36,6 +37,7 @@ export class MainThree {
   }
 
   public static Start(): void {
+    ViewsManager.Show(ViewId.MAIN_THREE);
     this.IsStarted = true;
     this._SetListeners();
     if (this.DomElementContainer)
@@ -44,6 +46,7 @@ export class MainThree {
   }
 
   public static Stop(): void {
+    ViewsManager.Hide(ViewId.MAIN_THREE);
     this.IsStarted = false;
     this._RemoveListeners();
     ThreeInteractiveManager.Stop();
@@ -58,13 +61,6 @@ export class MainThree {
     window.removeEventListener(DomEvents.RESIZE, this._OnResize);
   }
 
-  private static _SetCamera(cameraId: CamerasId): void {
-    this._CurrentCameraController = CamerasManager.GetCamera(cameraId);
-    this._CurrentCameraController.start();
-
-    this._OnResize();
-  }
-
   private static _SetRenderer(): void {
     this._Renderer = new WebGLRenderer({
       antialias: true,
@@ -73,6 +69,10 @@ export class MainThree {
 
     this._Renderer.setSize(window.innerWidth, window.innerHeight);
     this._Renderer.pixelRatio = window.devicePixelRatio;
+  }
+
+  public static SetHdr(hdrId: AssetsId): void {
+    this._Scene.environment = ThreeAssetsManager.GetHdr(hdrId);
   }
 
   private static _OnViewsChange = (): void => {
@@ -103,6 +103,7 @@ export class MainThree {
     this._CurrentCameraController = CamerasManager.GetCamera(
       CamerasManager.ActiveCameraId
     );
+    this._CurrentCameraController.start();
 
     ThreeInteractiveManager.SetCamera(this._CurrentCameraController.camera);
 

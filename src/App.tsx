@@ -1,12 +1,15 @@
 import '@styles/styles.scss';
+
 import { useEffect, useState } from 'react';
+
 import { Main } from './Main';
+import { ReactViewBase } from '@core/common/bases/views/react/ReactViewBase';
+import { ViewId } from '@constants/ViewId';
 import { ViewsManager } from './core/common/managers/ViewsManager';
-import { ViewTypes } from './core/common/constants/views/ViewTypes';
 
 export const App = () => {
   const [init, setInit] = useState(Main.IsInit);
-  const [views, setViews] = useState();
+  const [views, setViews] = useState<ReactViewBase[]>();
 
   useEffect(() => {
     const onInit = () => {
@@ -16,14 +19,15 @@ export const App = () => {
 
     const onViewsChange = () => {
       let displayedViews = []
-      for(const view of ViewsManager.GetDisplayedViews().values()) {
-        if(view.type === ViewTypes.REACT) {
-          displayedViews.push(<view.component viewId={view.viewId} key={view.viewId} />)
+      for (const view of ViewsManager.GetDisplayedViews().values()) {
+        if (view instanceof ReactViewBase) {
+          const ViewComponent = view.component as React.ComponentType<{ viewId: ViewId }>;
+          displayedViews.push(<ViewComponent viewId={view.viewId} key={view.viewId} />);
         }
       }
-      setViews(displayedViews)
+      setViews(displayedViews);
     }
-    
+
     onInit();
     onViewsChange();
 
@@ -38,8 +42,8 @@ export const App = () => {
 
   return (
     <>
-      { !init && <span>Loading...</span>}
-      { init && views}
+      {!init && <span>Loading...</span>}
+      {init && views}
     </>
   )
 }
