@@ -237,7 +237,7 @@ export class ThreeInteractiveManager {
     // window.removeEventListener(DomEvent.RESIZE, this._Resize);
   }
 
-  static _Resize() {
+  public static _Resize = () => {
     this._DomElement = MainThree.DomElementContainer;
     this._DomElementRect = this._DomElement.getBoundingClientRect();
   }

@@ -8,3 +8,8 @@ body {
   overscroll-behavior: none;
   font-family: $ff-primary;
 }
+
+#root {
+  min-width: 100dvw;
+  min-height: 100dvh;
+}
