@@ -38,6 +38,7 @@ export enum DomEvents {
   LOADEDDATA = 'loadeddata',
   LOADEDMETADATA = 'loadedmetadata',
   LOADSTART = 'loadstart',
+  MESSAGE = 'message',
   MOUSEDOWN = 'mousedown',
   MOUSEENTER = 'mouseenter',
   MOUSELEAVE = 'mouseleave',

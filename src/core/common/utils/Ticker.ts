@@ -5,12 +5,12 @@ type TickerCallback = {
 
 export class Ticker {
   private static _IsRunning: boolean;
-  private static _IntervalId: number;
+  private static _IntervalId: NodeJS.Timeout;
   private static _CurrentTime: number;
-  private static _ElapsedTime: number;
+  private static _ElapsedTime = 0;
   private static _StartTime: number;
   private static _Callbacks = new Array();
-  private static _MinTimeBetweenFrame = 0;
+  private static _MinTimeBetweenFrame = 60 / 1000;
 
   public static Start(time = -1): void {
     this.Stop();
@@ -54,7 +54,7 @@ export class Ticker {
   }
 
   public static SetFPS(fps: number): void {
-    this._MinTimeBetweenFrame = 1000 / fps;
+    this._MinTimeBetweenFrame = fps / 1000;
   }
 
   private static _RenderRaf = (): void => {
@@ -100,6 +100,6 @@ export class Ticker {
    * Time since the start of the game in milliseconds
    */
   public static get ElapsedTime(): number {
-    return this._ElapsedTime;
+    return this._ElapsedTime * 0.001;
   }
 }

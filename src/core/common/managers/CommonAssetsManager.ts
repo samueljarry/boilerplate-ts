@@ -27,6 +27,10 @@ export class CommonAssetsManager {
     this._Queue.set(imageId, assetToLoad(imagePath, AssetsTypes.IMAGE));
   }
 
+  public static AddImageWithoutId(imagePath: string): void {
+    this._Queue.set(null, assetToLoad(imagePath, AssetsTypes.IMAGE));
+  }
+
   public static AddSound(soundId: AssetsId, soundPath: string): void {
     this._Queue.set(soundId, assetToLoad(soundPath, AssetsTypes.SOUND));
   }

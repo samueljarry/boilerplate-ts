@@ -1,7 +1,75 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "strictPropertyInitialization": false,
+    "baseUrl": "./",
+    "paths": {
+      "@commands/*": [
+        "src/commands/*"
+      ],
+      "@behaviors/*": [
+        "src/behaviors/*"
+      ],
+      "@materials/*": [
+        "src/materials/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@constants/*": [
+        "src/constants/*"
+      ],
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@controllers/*": [
+        "src/controllers/*"
+      ],
+      "@proxies/*": [
+        "src/proxies/*"
+      ],
+      "@views/*": [
+        "src/views/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@theaters/*": [
+        "src/theaters/*"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@managers/*": [
+        "src/managers/*"
+      ],
+      "@public/*": [
+        "public/*"
+      ],
+      "@mobile/*": [
+        "../mobile/*"
+      ]
+    }
+  },
 }

@@ -1,19 +1,19 @@
-import { Scene, WebGLRenderer } from "three";
+import { Scene, Vector2, WebGLRenderer } from "three";
 
 import { Action } from "../common/utils/Action";
 import { AssetsId } from '../../constants/AssetsId';
 import { CameraControllerBase } from "./bases/cameras/CameraControllerBase";
 import { CamerasId } from "../../constants/CamerasId";
 import { CamerasManager } from "./managers/CamerasManager";
-import { DebugCameraController } from "src/controllers/DebugCameraController";
+import { DebugCameraController } from "@controllers/cameras/DebugCameraController";
 import { DomEvents } from "@core/common/constants/DomEvents";
-import { Object3DBase } from "./bases/Object3DBase";
 import { ThreeAssetsManager } from "./managers/ThreeAssetsManager";
 import { ThreeInteractiveManager } from "./managers/ThreeInteractiveManager";
 import { ThreeViewBase } from "./bases/ThreeViewBase";
 import { Ticker } from "@core/common/utils/Ticker";
 import { ViewId } from "@constants/ViewId";
 import { ViewsManager } from "@core/common/managers/ViewsManager";
+import { debounce } from '@core/common/utils/debounce';
 
 export class MainThree {
   private static _Scene = new Scene();
@@ -21,9 +21,10 @@ export class MainThree {
   public static IsStarted = false;
   public static OnResize = new Action();
   public static OnDomElementContainerSet = new Action();
-
+  
   private static _Renderer: WebGLRenderer;
   private static _DomElementContainer: HTMLElement;
+  private static _DomSize = new Vector2();
   private static _CurrentCameraController: CameraControllerBase;
   private static _PreviousCameraController: CameraControllerBase;
 
@@ -40,8 +41,7 @@ export class MainThree {
     ViewsManager.Show(ViewId.MAIN_THREE);
     this.IsStarted = true;
     this._SetListeners();
-    if (this.DomElementContainer)
-      ThreeInteractiveManager.Start(this.DomElementContainer);
+    ThreeInteractiveManager.Start(this._DomElementContainer);
     Ticker.Add(this._Update);
   }
 
@@ -68,17 +68,18 @@ export class MainThree {
     });
 
     this._Renderer.setSize(window.innerWidth, window.innerHeight);
-    this._Renderer.pixelRatio = window.devicePixelRatio;
+    this._Renderer.pixelRatio = 2;
   }
 
   public static SetHdr(hdrId: AssetsId): void {
     this._Scene.environment = ThreeAssetsManager.GetHdr(hdrId);
+    this._Scene.environmentIntensity = 0.9;
   }
 
   private static _OnViewsChange = (): void => {
     // Remove old views
     for (const child of this._Scene.children) {
-      if (child instanceof Object3DBase) {
+      if (child instanceof ThreeViewBase) {
         this._Scene.remove(child);
       }
     }
@@ -120,7 +121,7 @@ export class MainThree {
     this.OnResize.execute();
   };
 
-  private static _Update = (): void => {
+  private static _UpdateCameraController(): void {
     if (!this._CurrentCameraController?.cameraId) return;
     if (
       this._CurrentCameraController.cameraId === CamerasId.DEBUG_CAMERA &&
@@ -128,6 +129,23 @@ export class MainThree {
     ) {
       (this._CurrentCameraController as DebugCameraController).orbit.update();
     }
+  }
+
+  private static _CheckResize(): void {
+    if(this._DomSize.x !== window.innerWidth || this._DomSize.y !== window.innerHeight) {
+      this._DomSize.set(
+        window.innerWidth,
+        window.innerHeight
+      );
+
+      debounce(this.OnResize.execute, 100);
+    }
+  }
+
+  private static _Update = (): void => {
+    this._CheckResize();
+    this._UpdateCameraController();
+    
     this._Renderer.render(this._Scene, this._CurrentCameraController.camera);
   };
 
@@ -140,6 +158,9 @@ export class MainThree {
   }
   public static get DomElementContainer(): HTMLElement {
     return this._DomElementContainer;
+  }
+  public static get Scene(): Scene {
+    return this._Scene;
   }
   // #endregion
 }

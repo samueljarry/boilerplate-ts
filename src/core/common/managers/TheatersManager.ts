@@ -14,7 +14,8 @@ export class TheatersManager {
     this._DisplayedTheatersSet.clear();
   }
 
-  public static AddTheater(theater: TheaterBase): void {
+  public static AddTheater(theaterBase: new () => TheaterBase): void {
+    const theater = new theaterBase();
     this._TheatersMap.set(theater.id, theater)
   }
 

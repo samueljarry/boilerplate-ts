@@ -7,27 +7,15 @@ export class Object3DBase extends Object3D {
     super();
   }
 
-  init() {
-    for (const child of this.children) {
-      if (child instanceof Object3DBase) {
-        child.init();
-      }
-    }
+  public init() {
+    
   }
 
-  reset() {
-    for (const child of this.children) {
-      if (child instanceof Object3DBase) {
-        child.reset();
-      }
-    }
+  public reset() {
+    
   }
 
-  update = (dt: number): void => {
-    for (const child of this.children) {
-      if (child instanceof Object3DBase) {
-        child.update(dt);
-      }
-    }
+  public update(dt: number): void {
+    
   };
 }

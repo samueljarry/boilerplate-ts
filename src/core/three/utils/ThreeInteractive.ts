@@ -9,6 +9,8 @@ export class ThreeInteractive {
   private _isActivate = false;
   private _isMouseEnter = false;
   private _isMouseDown = false;
+  private _touchStartTime: number;
+  private _maxDelay = 500;
 
   public onInteraction = new Action();
   public interactWhenNotVisible = false;
@@ -31,7 +33,7 @@ export class ThreeInteractive {
   public addTarget(target: Object3D): void {
     target.traverse((child) => {
       if (child instanceof Mesh) {
-        this._targets.add(child);
+        this._targets.push(child);
       }
     });
     ThreeInteractiveManager.AddInteractive(this);
@@ -45,29 +47,36 @@ export class ThreeInteractive {
     this._isActivate = false;
   }
 
-  public sendInteraction = (name: InteractionName, intersect: Intersection): void => {
+  public sendInteraction = (name: InteractionName, { intersection, event }: { intersection: Intersection; event?: Event }): void => {
     let isClick = false;
-    if (name == InteractionName.MOUSE_ENTER) {
-      if (this._isMouseEnter) return;
-      this._isMouseEnter = true;
-    }
-    if (name == InteractionName.MOUSE_LEAVE) {
-      if (!this._isMouseEnter) return;
-      this._isMouseEnter = false;
+
+    switch(name) {
+      case InteractionName.MOUSE_ENTER:
+        if (this._isMouseEnter) return;
+        this._isMouseEnter = true;
+        break;
+      case InteractionName.MOUSE_LEAVE:
+        if (!this._isMouseEnter) return;
+        this._isMouseEnter = false;
+        break;
+      case InteractionName.MOUSE_DOWN:
+        this._isMouseDown = true;
+        this._touchStartTime = new Date().getTime();
+        break;
+      case InteractionName.MOUSE_UP:
+        const now = new Date().getTime();
+        isClick = this._isMouseDown && now - this._touchStartTime < this._maxDelay;
+        this._isMouseDown = false;
+        break;
     }
 
-    if (name == InteractionName.MOUSE_DOWN) this._isMouseDown = true;
-    if (name == InteractionName.MOUSE_UP) {
-      if (this._isMouseDown) isClick = true;
-      this._isMouseDown = false;
-    }
-    this._sendInteraction(name, intersect);
-    if (isClick) this._sendInteraction(InteractionName.CLICK, intersect);
+    this._sendInteraction(name, { intersection, event });
+    if (isClick) this._sendInteraction(InteractionName.CLICK, { intersection, event });
   }
 
-  private _sendInteraction(name: InteractionName, intersect: Intersection): void {
+  private _sendInteraction(name: InteractionName, { intersection, event = null }: { intersection: Intersection; event?: Event }): void {
     if (this.onInteraction) {
-      this.onInteraction.execute(name, intersect);
+      this.onInteraction.execute(name, { intersection, event });
     }
   }
 

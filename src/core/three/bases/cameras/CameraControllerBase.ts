@@ -2,6 +2,7 @@ import { Camera, Object3D } from "three";
 
 import { CamerasId } from "@constants/CamerasId";
 import { DomEvents } from "../../../common/constants/DomEvents";
+import { MainThree } from "@core/three/MainThree";
 
 export class CameraControllerBase extends Object3D {
   public isOrbitCamera = false;
@@ -21,14 +22,14 @@ export class CameraControllerBase extends Object3D {
   start() {
     this.started = true;
 
-    window.addEventListener(DomEvents.RESIZE, this.onResize);
+    MainThree.OnResize.add(this.onResize);
     this.onResize();
   }
 
   stop() {
     this.started = false;
 
-    window.removeEventListener(DomEvents.RESIZE, this.onResize);
+    MainThree.OnResize.remove(this.onResize);
   }
 
   setDomElementContainer(domElementContainer: HTMLElement) {

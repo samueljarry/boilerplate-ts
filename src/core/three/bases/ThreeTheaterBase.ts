@@ -4,14 +4,17 @@ import { TheaterBase } from "@core/common/bases/theaters/TheaterBase";
 import { TheatersId } from "@constants/TheatersId";
 import { TheaterLayer } from "@core/common/constants/theaters/TheaterLayer";
 import { CamerasId } from "@constants/CamerasId";
+import { AssetsId } from "@constants/AssetsId";
 
 export class ThreeTheaterBase extends TheaterBase {
-  public cameraId: CamerasId;
+  private _cameraId: CamerasId;
+  private _hdrId: AssetsId
   
-  constructor(theaterId: TheatersId, theaterLayer: TheaterLayer, cameraId: CamerasId) {
+  constructor(theaterId: TheatersId, theaterLayer: TheaterLayer, cameraId: CamerasId, hdrId: AssetsId) {
     super(theaterId, theaterLayer);
 
-    this.cameraId = cameraId;
+    this._cameraId = cameraId;
+    this._hdrId = hdrId;
 
     if (!MainThree.IsInit) {
       MainThree.Init();
@@ -21,10 +24,14 @@ export class ThreeTheaterBase extends TheaterBase {
   public override init(): void {
     super.init();
 
-    CamerasManager.SetActiveCamera(this.cameraId);
+    CamerasManager.SetActiveCamera(this._cameraId);
+    MainThree.SetHdr(this._hdrId);
   }
 
   public override reset(): void {
     super.reset();
   }
+
+  public get cameraId(): CamerasId { return this._cameraId; }
+  public get hdrId(): AssetsId { return this._hdrId; }
 }

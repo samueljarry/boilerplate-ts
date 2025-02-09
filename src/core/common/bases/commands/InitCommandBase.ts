@@ -1,5 +1,6 @@
 export class InitCommandBase {
   public async init(): Promise<void> {
+    await this.initBefore();
     await this.initProxies();
     await this.initManagers();
     await this.initThree();
@@ -7,8 +8,10 @@ export class InitCommandBase {
     await this.initTheaters();
     await this.initCommons();
     await this.loadAssets();
-    await this.initAfterLoad();
+    await this.initAfter();
   }
+
+  public async initBefore(): Promise<void> {}
 
   /**
    * Init all proxies
@@ -48,5 +51,5 @@ export class InitCommandBase {
   /**
    * Init anything after everything is loaded
    */
-  public async initAfterLoad(): Promise<void> {}
+  public async initAfter(): Promise<void> {}
 }

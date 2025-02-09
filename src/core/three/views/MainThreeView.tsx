@@ -1,8 +1,9 @@
-import { ReactView } from '@core/common/bases/views/react/ReactView';
-import { MainThree } from '../MainThree';
+import { ReactView, ReactViewProps } from '@core/common/bases/views/react/ReactView';
 import { useEffect, useRef } from 'react';
 
-export const MainThreeView = (props) => {
+import { MainThree } from '../MainThree';
+
+export const MainThreeView = (props: ReactViewProps) => {
   const canvasContainer = useRef();  
 
   useEffect(() => {

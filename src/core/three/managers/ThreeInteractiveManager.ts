@@ -65,22 +65,22 @@ export class ThreeInteractiveManager {
   private static _OnMouseDown = (e: MouseEvent): void => {
     this._isMouseDown = true;
     this._UpdatePointerPosition(e);
-    this._Raycast(InteractionName.MOUSE_DOWN);
-    window.addEventListener(DomEvents.MOUSEUP, this._OnMouseUp);
-    window.addEventListener(DomEvents.MOUSELEAVE, this._OnMouseUp);
+    this._Raycast(InteractionName.MOUSE_DOWN, e);
+    this._DomElement.addEventListener(DomEvents.MOUSEUP, this._OnMouseUp);
+    this._DomElement.addEventListener(DomEvents.MOUSELEAVE, this._OnMouseUp);
   };
 
   private static _OnMouseUp = (e: MouseEvent): void => {
     this._isMouseDown = false;
     this._UpdatePointerPosition(e);
-    this._Raycast(InteractionName.MOUSE_UP);
-    window.removeEventListener(DomEvents.MOUSEUP, this._OnMouseUp);
-    window.removeEventListener(DomEvents.MOUSELEAVE, this._OnMouseUp);
+    this._Raycast(InteractionName.MOUSE_UP, e);
+    this._DomElement.removeEventListener(DomEvents.MOUSEUP, this._OnMouseUp);
+    this._DomElement.removeEventListener(DomEvents.MOUSELEAVE, this._OnMouseUp);
   };
 
   private static _OnMouseMove = (e: MouseEvent): void => {
     this._UpdatePointerPosition(e);
-    this._Raycast(InteractionName.MOUSE_MOVE);
+    this._Raycast(InteractionName.MOUSE_MOVE, e);
   };
 
   private static _Update = (): void => {
@@ -92,19 +92,19 @@ export class ThreeInteractiveManager {
 
   private static _RefreshUnderMouseObjects(): void {
     this._Raycast();
-    for (const [key, value] of this._LastUpdateUnderMouseObjects) {
+    for (const [key, intersection] of this._LastUpdateUnderMouseObjects) {
       if (!this._UnderMouseObjects.has(key)) {
-        key.sendInteraction(InteractionName.MOUSE_LEAVE, value);
+        key.sendInteraction(InteractionName.MOUSE_LEAVE, { intersection });
         this._LastUpdateUnderMouseObjects.delete(key);
       }
     }
 
     let hasCursor = false;
-    for (const [key, value] of this._UnderMouseObjects) {
-      key.sendInteraction(InteractionName.MOUSE_ENTER, value);
+    for (const [key, intersection] of this._UnderMouseObjects) {
+      key.sendInteraction(InteractionName.MOUSE_ENTER, { intersection });
       if (!hasCursor && !key.passThrough) {
         hasCursor = true;
-        this._DomElement.style.cursor = key.cursor;
+        // this._DomElement.style.cursor = key.cursor;
       }
     }
     if (!hasCursor) {
@@ -117,7 +117,7 @@ export class ThreeInteractiveManager {
     this._UnderMouseObjects.clear();
   }
 
-  private static _Raycast(interactionName: InteractionName = undefined): void {
+  private static _Raycast(interactionName: InteractionName = undefined, event: Event = undefined): void {
     if (!this._Camera) return;
     if (!this._IsEnabled) return;
     if (this._InteractivesSet.size === 0) return;
@@ -131,32 +131,30 @@ export class ThreeInteractiveManager {
         if (!(this._IsInScene(mesh) || o.interactWhenNotInScene)) continue;
         if (!(mesh.visible || o.interactWhenNotVisible)) continue;
 
-        if (!DeviceUtils.IsMobile || this._isMouseDown) {
-          this._InteractivesActiveArray.push(mesh);
-        }
+        this._InteractivesActiveArray.push(mesh);
       }
     }
 
     this._Raycaster.setFromCamera(this._PointerPosition, this._Camera);
     const intersects = this._Raycaster.intersectObjects(this._InteractivesActiveArray);
 
-    for (let intersect of intersects) {
+    for (let intersection of intersects) {
       if (
-        intersect.object instanceof Mesh &&
-        this._InteractivesMap.has(intersect.object)
+        intersection.object instanceof Mesh &&
+        this._InteractivesMap.has(intersection.object)
       ) {
-        const interactive = this._InteractivesMap.get(intersect.object);
+        const interactive = this._InteractivesMap.get(intersection.object);
         if (interactive.isActivate) {
           if (
             interactionName === InteractionName.MOUSE_MOVE &&
             !interactive.isMouseEnter
           ) {
-            interactive.sendInteraction(InteractionName.MOUSE_ENTER, intersect);
+            interactive.sendInteraction(InteractionName.MOUSE_ENTER, { intersection, event });
           }
           if (interactionName) {
-            interactive.sendInteraction(interactionName, intersect);
+            interactive.sendInteraction(interactionName, { intersection, event });
           }
-          this._UnderMouseObjects.set(interactive, intersect);
+          this._UnderMouseObjects.set(interactive, intersection);
           if (!interactive.passThrough) {
             return;
           }
@@ -228,9 +226,8 @@ export class ThreeInteractiveManager {
       this._OnMouseMove
     );
     this._DomElement.removeEventListener(DomEvents.TOUCHEND, this._OnMouseUp);
-
-    window.removeEventListener(DomEvents.MOUSEUP, this._OnMouseUp);
-    window.removeEventListener(DomEvents.MOUSELEAVE, this._OnMouseUp);
+    this._DomElement.removeEventListener(DomEvents.MOUSEUP, this._OnMouseUp);
+    this._DomElement.removeEventListener(DomEvents.MOUSELEAVE, this._OnMouseUp);
 
     Ticker.Remove(this._Update);
     MainThree.OnResize.remove(this._Resize);

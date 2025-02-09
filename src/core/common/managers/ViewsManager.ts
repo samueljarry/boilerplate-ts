@@ -16,8 +16,9 @@ export class ViewsManager {
     this._ViewsMap.set(viewId, new ReactViewBase(viewId, viewLayer, view));
   }
 
-  public static AddThreeView(viewId: ViewId, view: new () => ThreeViewBase): void {
-    this._ViewsMap.set(viewId, new view())
+  public static AddThreeView(viewBase: new () => ThreeViewBase): void {
+    const view = new viewBase();
+    this._ViewsMap.set(view.viewId, view)
   }
 
   public static RemoveView(viewId: ViewId): void {
@@ -41,8 +42,8 @@ export class ViewsManager {
 
   public static Hide(viewId: ViewId): void {
     const view = this.GetView(viewId);
-    
     view.reset();
+    
     this._LayerViewsMap.delete(view.layer);
     this._DisplayedViewsSet.delete(this._ViewsMap.get(viewId));
     this.OnViewsChange.execute();

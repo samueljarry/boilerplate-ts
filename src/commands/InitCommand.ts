@@ -1,6 +1,6 @@
 import { CamerasManager } from "../core/three/managers/CamerasManager";
-import { DebugCameraController } from "../controllers/DebugCameraController";
-import { DummyCameraController } from "../controllers/DummyCameraController";
+import { DebugCameraController } from "@controllers/cameras/DebugCameraController";
+import { DummyCameraController } from "@controllers/cameras/DummyCameraController";
 import { InitCommandBase } from "@core/common/bases/commands/InitCommandBase";
 import { MainTheater } from "@theaters/MainTheater";
 import { MainThreeView } from "../core/three/views/MainThreeView";
@@ -24,7 +24,7 @@ export class InitCommand extends InitCommandBase {
   }
 
   public async initThree(): Promise<void> {
-    ViewsManager.AddThreeView(ViewId.THREE_TEST, TestThreeView);
+    ViewsManager.AddThreeView(TestThreeView);
 
     CamerasManager.AddCamera(new DebugCameraController());
     CamerasManager.AddCamera(new DummyCameraController());
@@ -35,7 +35,7 @@ export class InitCommand extends InitCommandBase {
   }
 
   public async initTheaters(): Promise<void> {
-    TheatersManager.AddTheater(new MainTheater());
+    TheatersManager.AddTheater(MainTheater);
   }
 
   public async initAfterLoad(): Promise<void> {

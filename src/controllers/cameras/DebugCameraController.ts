@@ -1,8 +1,8 @@
+import { CamerasId } from "@constants/CamerasId";
 import { MainThree } from "@core/three/MainThree";
-import { Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { CamerasId } from "../constants/CamerasId";
-import { PerspectiveCameraControllerBase } from "../core/three/bases/cameras/PerspectiveCameraControllerBase";
+import { PerspectiveCameraControllerBase } from "@core/three/bases/cameras/PerspectiveCameraControllerBase";
+import { Vector3 } from "three";
 
 export class DebugCameraController extends PerspectiveCameraControllerBase {
   public isOrbitCamera = true;
