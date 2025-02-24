@@ -4,11 +4,12 @@ export class InitCommandBase {
     await this.initProxies();
     await this.initManagers();
     await this.initThree();
+    await this.loadAssets();
+    await this.initCommons();
+    await this.initAfter();
+
     await this.initViews();
     await this.initTheaters();
-    await this.initCommons();
-    await this.loadAssets();
-    await this.initAfter();
   }
 
   public async initBefore(): Promise<void> {}

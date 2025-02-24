@@ -1,5 +1,6 @@
 export enum AssetsTypes {
   TEXTURE = 'TEXTURE',
   GLB = 'GLB',
-  HDR = 'HDR'
+  HDR = 'HDR',
+  CUBEMAP = 'CUBEMAP',
 }

@@ -1,6 +1,6 @@
 import { TheaterLayer } from "@core/common/constants/theaters/TheaterLayer";
-import { TheatersId } from "@constants/TheatersId";
-import { ViewId } from "@constants/ViewId";
+import { TheatersId } from "@constants/LayoutConstants";
+import { ViewId } from '@constants/LayoutConstants'
 
 export class TheaterBase {
   public viewsList = new Set<ViewId>();

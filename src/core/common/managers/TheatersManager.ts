@@ -1,6 +1,6 @@
 import { TheaterBase } from '../bases/theaters/TheaterBase';
 import { TheaterLayer } from '../constants/theaters/TheaterLayer';
-import { TheatersId } from '../../../constants/TheatersId';
+import { TheatersId } from '@constants/LayoutConstants';
 import { ViewsManager } from "@core/common/managers/ViewsManager";
 
 export class TheatersManager {

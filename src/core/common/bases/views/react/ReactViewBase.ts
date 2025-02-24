@@ -1,5 +1,5 @@
 import { ViewBase } from "../ViewBase";
-import { ViewId } from "../../../../../constants/ViewId";
+import { ViewId } from "@constants/LayoutConstants";
 import { ViewLayer } from "../../../constants/views/ViewLayer";
 import { ViewTypes } from "../../../constants/views/ViewTypes";
 

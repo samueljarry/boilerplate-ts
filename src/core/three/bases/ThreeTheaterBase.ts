@@ -1,7 +1,7 @@
 import { CamerasManager } from "../managers/CamerasManager";
 import { MainThree } from "../MainThree";
 import { TheaterBase } from "@core/common/bases/theaters/TheaterBase";
-import { TheatersId } from "@constants/TheatersId";
+import { TheatersId } from "@constants/LayoutConstants";
 import { TheaterLayer } from "@core/common/constants/theaters/TheaterLayer";
 import { CamerasId } from "@constants/CamerasId";
 import { AssetsId } from "@constants/AssetsId";

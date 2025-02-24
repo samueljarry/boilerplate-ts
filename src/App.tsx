@@ -4,18 +4,23 @@ import { useEffect, useState } from 'react';
 
 import { Main } from './Main';
 import { ReactViewBase } from '@core/common/bases/views/react/ReactViewBase';
-import { ViewId } from '@constants/ViewId';
+import { ViewId } from '@constants/LayoutConstants';
 import { ViewsManager } from './core/common/managers/ViewsManager';
 
 export const App = () => {
   const [init, setInit] = useState(Main.IsInit);
+  const [loadingVisible, setLoadingVisible] = useState(!Main.IsInit);
   const [views, setViews] = useState<ReactViewBase[]>();
 
   useEffect(() => {
     const onInit = () => {
       setInit(Main.IsInit);
-      Main.Start();
+      if (Main.IsInit) {
+        Main.Start();
+        setLoadingVisible(false)
+      }
     }
+
 
     const onViewsChange = () => {
       let displayedViews = []
@@ -42,7 +47,7 @@ export const App = () => {
 
   return (
     <>
-      {!init && <span>Loading...</span>}
+      {loadingVisible && ('Loading')}
       {init && views}
     </>
   )

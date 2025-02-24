@@ -2,7 +2,7 @@ import { Action } from "@core/common/utils/Action";
 import { ReactViewBase } from "../bases/views/react/ReactViewBase";
 import { ThreeViewBase } from "../../three/bases/ThreeViewBase";
 import { ViewBase } from '../bases/views/ViewBase';
-import { ViewId } from "../../../constants/ViewId";
+import { ViewId } from "@constants/LayoutConstants";
 import { ViewLayer } from '../constants/views/ViewLayer';
 
 export class ViewsManager {

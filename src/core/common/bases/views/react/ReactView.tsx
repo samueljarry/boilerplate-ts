@@ -1,7 +1,7 @@
 import { ForwardedRef, HTMLProps, ReactNode, forwardRef, useEffect, useRef } from "react"
 
 import { ReactViewBase } from "./ReactViewBase";
-import { ViewId } from "@constants/ViewId";
+import { ViewId } from '@constants/LayoutConstants'
 import { ViewsManager } from "@core/common/managers/ViewsManager";
 
 export type ReactViewProps = {

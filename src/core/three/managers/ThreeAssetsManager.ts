@@ -1,8 +1,9 @@
-import { DataTexture, Scene, SkinnedMesh, Texture } from 'three';
+import { CubeTexture, DataTexture, Scene, SkinnedMesh, Texture } from 'three';
 import { GLTF, GlbLoader } from "../loaders/GlbLoader.js";
 
 import { AssetsId } from "@constants/AssetsId.js";
 import { AssetsTypes } from "../constants/AssetsTypes.js";
+import { CubemapLoader } from '../loaders/CubemapLoader.js';
 import { HdrLoader } from "../loaders/HdrLoader.js";
 import { TextureLoader } from "../loaders/TextureLoader.js";
 
@@ -14,9 +15,10 @@ const assetToLoad = (path: string, type: AssetsTypes): AssetToLoad => ({ path, t
 
 export class ThreeAssetsManager {
   private static _Queue = new Map();
-  static TexturesMap = new Map<AssetsId, Texture>();
-  static ModelsMap = new Map<AssetsId, GLTF>();
-  static HdrMap = new Map<AssetsId, DataTexture>();
+  private static _TexturesMap = new Map<AssetsId, Texture>();
+  private static _ModelsMap = new Map<AssetsId, GLTF>();
+  private static _HdrMap = new Map<AssetsId, DataTexture>();
+  private static _CubeTexturesMap = new Map<AssetsId, CubeTexture>();
 
   public static AddTexture(textureId: AssetsId, texturePath: string): void {
     this._Queue.set(textureId, assetToLoad(texturePath, AssetsTypes.TEXTURE));
@@ -30,6 +32,10 @@ export class ThreeAssetsManager {
     this._Queue.set(hdrId, assetToLoad(hdrPath, AssetsTypes.HDR));
   }
 
+  public static AddCubeTexture(assetId: AssetsId, folderPath: string): void {
+    this._Queue.set(assetId, assetToLoad(folderPath, AssetsTypes.CUBEMAP));
+  }
+
   public static async Load(): Promise<void> {
     const promises = Array.from(this._Queue.entries()).map(
       async ([id, { type, path }]) => {
@@ -38,15 +44,19 @@ export class ThreeAssetsManager {
         switch (type) {
           case AssetsTypes.TEXTURE:
             asset = await TextureLoader.Load(path);
-            this.TexturesMap.set(id, asset);
+            this._TexturesMap.set(id, asset);
             break;
           case AssetsTypes.GLB:
             asset = await GlbLoader.Load(path);
-            this.ModelsMap.set(id, asset);
+            this._ModelsMap.set(id, asset);
             break;
           case AssetsTypes.HDR:
             asset = await HdrLoader.Load(path);
-            this.HdrMap.set(id, asset);
+            this._HdrMap.set(id, asset);
+            break;
+          case AssetsTypes.CUBEMAP:
+            asset = await CubemapLoader.Load(path);
+            this._CubeTexturesMap.set(id, asset);
             break;
         }
       }
@@ -56,11 +66,15 @@ export class ThreeAssetsManager {
   }
 
   public static GetTexture(textureId: AssetsId): Texture {
-    return this.TexturesMap.get(textureId);
+    return this._TexturesMap.get(textureId);
   }
 
   public static GetModel(modelId: AssetsId): GLTF {
-    return this.ModelsMap.get(modelId);
+    return this._ModelsMap.get(modelId);
+  }
+
+  public static GetCubeTexture(cubeTextureId: AssetsId): CubeTexture {
+    return this._CubeTexturesMap.get(cubeTextureId);
   }
 
   public static GetModelClone(modelId: AssetsId): GLTF {
@@ -101,6 +115,6 @@ export class ThreeAssetsManager {
   }
 
   public static GetHdr(hdrId: AssetsId): DataTexture {
-    return this.HdrMap.get(hdrId);
+    return this._HdrMap.get(hdrId);
   }
 }

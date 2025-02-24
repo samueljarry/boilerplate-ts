@@ -4,20 +4,20 @@ import { MainThree } from "../../MainThree";
 import { OrthographicCamera } from "three";
 
 export class OrthographicCameraControllerBase extends CameraControllerBase {
-  declare public camera: OrthographicCamera;
+  public declare camera: OrthographicCamera;
   public aspectRatio: number = window.innerWidth / window.innerHeight;
   protected _domElementSet = false;
-  
+  protected viewSize = 1;
+
   constructor(cameraId: CamerasId) {
     super(cameraId);
 
+    // Initialisation avec des valeurs par défaut
     this.camera = new OrthographicCamera(-1, 1, 1, -1);
-    
-    if(MainThree.DomElementContainer) {
+
+    if (MainThree.DomElementContainer) {
       this._domElementSet = true;
-      this.updateCameraAspect();
-    } 
-    else {
+    } else {
       MainThree.OnDomElementContainerSet.add(this.setCameraAspectOnInit);
     }
 
@@ -26,26 +26,5 @@ export class OrthographicCameraControllerBase extends CameraControllerBase {
 
   public setCameraAspectOnInit = (): void => {
     this._domElementSet = true;
-    this.updateCameraAspect();
-    MainThree.OnDomElementContainerSet.remove(this.updateCameraAspect);
-  }
-
-  public updateCameraAspect = (): void => {
-    const aspect = MainThree.DomElementContainer.offsetWidth / MainThree.DomElementContainer.offsetHeight;
-
-    this.camera.left = -this.aspectRatio;
-    this.camera.right = this.aspectRatio;
-    this.camera.top = this.aspectRatio / aspect;
-    this.camera.bottom = -this.aspectRatio / aspect;
-    
-    this.camera.updateProjectionMatrix();
-  }
-
-  public onResize = (): void => {
-    this.aspectRatio = window.innerWidth / window.innerHeight;
-
-    if(MainThree.DomElementContainer) {
-      this.updateCameraAspect();
-    }
-  }
+  };
 }

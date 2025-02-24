@@ -1,8 +1,10 @@
+import { TheatersId, ViewId } from "./constants/LayoutConstants";
+
 import { Action } from "./core/common/utils/Action";
 import { InitCommand } from "./commands/InitCommand";
-import { TheatersId } from "./constants/TheatersId";
 import { TheatersManager } from "./core/common/managers/TheatersManager";
 import { Ticker } from "./core/common/utils/Ticker";
+import { ViewsManager } from "@core/common/managers/ViewsManager";
 
 export class Main {
   public static IsInit = false;
@@ -25,6 +27,7 @@ export class Main {
 
   public static Start() {
     Ticker.Start();
+    ViewsManager.Show(ViewId.MAIN_THREE);
     TheatersManager.Show(TheatersId.MAIN);
   }
 }

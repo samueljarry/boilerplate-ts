@@ -4,7 +4,7 @@ import { Object3D } from "three";
 import { Object3DBase } from "./Object3DBase";
 import { Ticker } from "../../common/utils/Ticker";
 import { ViewBase } from "../../common/bases/views/ViewBase";
-import { ViewId } from "../../../constants/ViewId";
+import { ViewId } from "@constants/LayoutConstants";
 import { ViewLayer } from "../../common/constants/views/ViewLayer";
 import { ViewTypes } from "../../common/constants/views/ViewTypes";
 
